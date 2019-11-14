@@ -20,8 +20,8 @@ namespace Domain.Models
 
         public int SellerID { get; set; }
 
-        public virtual Customer Customer { get; set; }
-        public virtual Seller Seller { get; set; }
-        public virtual ICollection<SalesInvoceDetail> SalesInvoceDetails { get; set; }
+        public  Customer Customer { get; set; }
+        public  Seller Seller { get; set; }
+        public  ICollection<SalesInvoceDetail> SalesInvoceDetails { get; set; }
     }
 }

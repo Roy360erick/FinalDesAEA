@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -26,6 +27,8 @@ namespace Domain.Models
 
         [NotMapped]
         public string FullName => $"{Name} {LastName}";
+
+        [JsonIgnore]
         public virtual ICollection<SalesInvoce> SalesInvoces { get; set; }
     }
 }

@@ -10,38 +10,16 @@ using System.Threading.Tasks;
 
 namespace Services.Implentations
 {
-    public class ProductService : IServiceBase<Product>
+    public class CustomerService : IServiceBase<Customer>
     {
-
-        public EResponseBase<Product> Get(int ID)
+        public EResponseBase<Customer> Get(int ID)
         {
-            EResponseBase<Product> response = new EResponseBase<Product>();
+            EResponseBase<Customer> response = new EResponseBase<Customer>();
             try
             {
                 using (var context = new DataContext())
                 {
-                    response.Object = context.Products.Where(x => x.ProductID == ID).FirstOrDefault();
-                }
-                response.IsSuccess = true;
-                response.Message = "Success";
-                return response;
-            }
-            catch (Exception ex )
-            {
-                response.Message = ex.Message;
-                response.IsSuccess = false;
-                return response;
-            }
-        }
-
-        public EResponseBase<Product> GetList()
-        {
-            EResponseBase<Product> response = new EResponseBase<Product>();
-            try
-            {
-                using (var context = new DataContext())
-                {
-                    response.List = context.Products.ToList();
+                    response.Object = context.Customers.Where(x => x.CustomerID == ID).FirstOrDefault();
                 }
                 response.IsSuccess = true;
                 response.Message = "Success";
@@ -54,17 +32,35 @@ namespace Services.Implentations
                 return response;
             }
         }
-    
-        public EResponseBase<Product> Add(Product model)
+
+        public EResponseBase<Customer> GetList()
         {
-            EResponseBase<Product> response = new EResponseBase<Product>();
+            EResponseBase<Customer> response = new EResponseBase<Customer>();
             try
             {
                 using (var context = new DataContext())
                 {
-                    model.CreateAt = DateTime.Now;
-                    model.State = true;
-                    context.Products.Add(model);
+                    response.List = context.Customers.ToList();
+                }
+                response.IsSuccess = true;
+                response.Message = "Success";
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+                response.IsSuccess = false;
+                return response;
+            }
+        }
+        public EResponseBase<Customer> Add(Customer model)
+        {
+            EResponseBase<Customer> response = new EResponseBase<Customer>();
+            try
+            {
+                using (var context = new DataContext())
+                {
+                    context.Customers.Add(model);
                     context.SaveChanges();
                 }
                 response.IsSuccess = true;
@@ -79,18 +75,14 @@ namespace Services.Implentations
             }
         }
 
-        public EResponseBase<Product> Update(Product model)
+        public EResponseBase<Customer> Update(Customer model)
         {
-            EResponseBase<Product> response = new EResponseBase<Product>();
+            EResponseBase<Customer> response = new EResponseBase<Customer>();
             try
             {
                 using (var context = new DataContext())
                 {
-                    var item = context.Products.Where(x => x.ProductID == model.ProductID).FirstOrDefault();
-                    item.Name = model.Name;
-                    item.Stock = model.Stock;
-                    item.Price = model.Price;
-                    item.Remarks = model.Remarks;
+                    context.Customers.Add(model);
                     context.SaveChanges();
                 }
                 response.IsSuccess = true;
@@ -105,15 +97,15 @@ namespace Services.Implentations
             }
         }
 
-        public EResponseBase<Product> Delete(int ID)
+        public EResponseBase<Customer> Delete(int ID)
         {
-            EResponseBase<Product> response = new EResponseBase<Product>();
+            EResponseBase<Customer> response = new EResponseBase<Customer>();
             try
             {
                 using (var context = new DataContext())
                 {
-                    var item = context.Products.Where(x => x.ProductID == ID).FirstOrDefault();
-                    context.Products.Remove(item);
+                    var item = context.Customers.Where(x => x.CustomerID == ID).FirstOrDefault();
+                    context.Customers.Remove(item);
                     context.SaveChanges();
                 }
                 response.IsSuccess = true;
@@ -127,6 +119,5 @@ namespace Services.Implentations
                 return response;
             }
         }
-
     }
 }

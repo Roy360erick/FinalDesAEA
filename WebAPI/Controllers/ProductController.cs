@@ -11,6 +11,7 @@ using System.Web.Http.Results;
 
 namespace WebAPI.Controllers
 {
+    //[Authorize]
     public class ProductController : ApiController
     {
         private ProductService productService = new ProductService();
@@ -40,7 +41,7 @@ namespace WebAPI.Controllers
         [HttpPut]
         public JsonResult<EResponseBase<Product>> Put(Product Product)
         {
-            return Json(productService.Add(Product));
+            return Json(productService.Update(Product));
         }
 
         // DELETE: api/Product/5

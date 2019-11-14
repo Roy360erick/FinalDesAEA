@@ -10,38 +10,16 @@ using System.Threading.Tasks;
 
 namespace Services.Implentations
 {
-    public class ProductService : IServiceBase<Product>
+    public class SalesInvoceDetailService : IServiceBase<SalesInvoceDetail>
     {
-
-        public EResponseBase<Product> Get(int ID)
+        public EResponseBase<SalesInvoceDetail> Get(int ID)
         {
-            EResponseBase<Product> response = new EResponseBase<Product>();
+            EResponseBase<SalesInvoceDetail> response = new EResponseBase<SalesInvoceDetail>();
             try
             {
                 using (var context = new DataContext())
                 {
-                    response.Object = context.Products.Where(x => x.ProductID == ID).FirstOrDefault();
-                }
-                response.IsSuccess = true;
-                response.Message = "Success";
-                return response;
-            }
-            catch (Exception ex )
-            {
-                response.Message = ex.Message;
-                response.IsSuccess = false;
-                return response;
-            }
-        }
-
-        public EResponseBase<Product> GetList()
-        {
-            EResponseBase<Product> response = new EResponseBase<Product>();
-            try
-            {
-                using (var context = new DataContext())
-                {
-                    response.List = context.Products.ToList();
+                    response.Object = context.SalesInvoceDetails.Where(x => x.SalesInvoceDetailID == ID).FirstOrDefault();
                 }
                 response.IsSuccess = true;
                 response.Message = "Success";
@@ -54,17 +32,37 @@ namespace Services.Implentations
                 return response;
             }
         }
-    
-        public EResponseBase<Product> Add(Product model)
+
+        public EResponseBase<SalesInvoceDetail> GetList()
         {
-            EResponseBase<Product> response = new EResponseBase<Product>();
+            EResponseBase<SalesInvoceDetail> response = new EResponseBase<SalesInvoceDetail>();
             try
             {
                 using (var context = new DataContext())
                 {
-                    model.CreateAt = DateTime.Now;
+                    response.List = context.SalesInvoceDetails.ToList();
+                }
+                response.IsSuccess = true;
+                response.Message = "Success";
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+                response.IsSuccess = false;
+                return response;
+            }
+        }
+
+        public EResponseBase<SalesInvoceDetail> Add(SalesInvoceDetail model)
+        {
+            EResponseBase<SalesInvoceDetail> response = new EResponseBase<SalesInvoceDetail>();
+            try
+            {
+                using (var context = new DataContext())
+                {
                     model.State = true;
-                    context.Products.Add(model);
+                    context.SalesInvoceDetails.Add(model);
                     context.SaveChanges();
                 }
                 response.IsSuccess = true;
@@ -79,18 +77,18 @@ namespace Services.Implentations
             }
         }
 
-        public EResponseBase<Product> Update(Product model)
+        public EResponseBase<SalesInvoceDetail> Update(SalesInvoceDetail model)
         {
-            EResponseBase<Product> response = new EResponseBase<Product>();
+            EResponseBase<SalesInvoceDetail> response = new EResponseBase<SalesInvoceDetail>();
             try
             {
                 using (var context = new DataContext())
                 {
-                    var item = context.Products.Where(x => x.ProductID == model.ProductID).FirstOrDefault();
-                    item.Name = model.Name;
-                    item.Stock = model.Stock;
+                    var item = context.SalesInvoceDetails.Where(x => x.SalesInvoceDetailID == model.SalesInvoceDetailID).FirstOrDefault();
                     item.Price = model.Price;
-                    item.Remarks = model.Remarks;
+                    item.Quantity = model.Quantity;
+                    item.SalesInvoceID = model.SalesInvoceID;
+                    item.ProductID = model.ProductID;
                     context.SaveChanges();
                 }
                 response.IsSuccess = true;
@@ -105,15 +103,15 @@ namespace Services.Implentations
             }
         }
 
-        public EResponseBase<Product> Delete(int ID)
+        public EResponseBase<SalesInvoceDetail> Delete(int ID)
         {
-            EResponseBase<Product> response = new EResponseBase<Product>();
+            EResponseBase<SalesInvoceDetail> response = new EResponseBase<SalesInvoceDetail>();
             try
             {
                 using (var context = new DataContext())
                 {
-                    var item = context.Products.Where(x => x.ProductID == ID).FirstOrDefault();
-                    context.Products.Remove(item);
+                    var item = context.SalesInvoceDetails.Where(x => x.SalesInvoceDetailID == ID).FirstOrDefault();
+                    context.SalesInvoceDetails.Remove(item);
                     context.SaveChanges();
                 }
                 response.IsSuccess = true;

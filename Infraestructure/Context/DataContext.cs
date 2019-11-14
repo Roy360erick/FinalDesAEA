@@ -10,7 +10,7 @@ namespace Infraestructure.Context
     {
         public DataContext() : base("name= MyContextDB")
         {
-
+            this.Configuration.LazyLoadingEnabled = false;
         }
 
         public DbSet<Seller> Sellers { get; set; }
