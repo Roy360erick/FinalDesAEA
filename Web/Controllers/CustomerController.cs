@@ -19,18 +19,43 @@ namespace Web.Controllers
             return View();
         }
 
-        public JsonResult Get()
+        [HttpGet]
+        public JsonResult GetAll()
         {
-            var response = Task.Run(() => proxy.Get());
+            var response = Task.Run(() => proxy.GetAll());
+            return Json(response.Result.List, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult Get(int id)
+        {
+            var response = Task.Run(() => proxy.Get(id));
             return Json(response.Result.List, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public ActionResult Create(CustomerModel customer)
+        public ActionResult Add(CustomerModel customer)
         {
             var response = Task.Run(() => proxy.Add(customer));
-            //string message = response.Result.Message;
-            return Json(new { Message = "Success", JsonRequestBehavior.AllowGet });
+            string message = response.Result.Message;
+            return Json(new { Message = message, JsonRequestBehavior.AllowGet });
         }
+
+        [HttpPut]
+        public ActionResult Update(CustomerModel customer)
+        {
+            var response = Task.Run(() => proxy.Update(customer));
+            string message = response.Result.Message;
+            return Json(new { Message = message, JsonRequestBehavior.AllowGet });
+        }
+
+        [HttpDelete]
+        public ActionResult Delete(int id)
+        {
+            var response = Task.Run(() => proxy.Delete(id));
+            string message = response.Result.Message;
+            return Json(new { Message = message, JsonRequestBehavior.AllowGet });
+        }
+
     }
 }

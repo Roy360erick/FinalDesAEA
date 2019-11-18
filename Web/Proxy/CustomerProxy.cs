@@ -15,7 +15,7 @@ namespace Web.Proxy
 {
     public class CustomerProxy
     {
-        public async Task<ResponseProxy<CustomerModel>> Get()
+        public async Task<ResponseProxy<CustomerModel>> GetAll()
         {
             var client = new HttpClient();
             string baseUrl = ApiUrlHelper.BaseUrl();
@@ -26,14 +26,7 @@ namespace Web.Proxy
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var result = await response.Content.ReadAsStringAsync();
-                var customers = JsonConvert.DeserializeObject<List<CustomerModel>>(result);
-                return new ResponseProxy<CustomerModel>
-                {
-                    Success = true,
-                    Code = (int)HttpStatusCode.OK,
-                    Message = "Exito",
-                    List = customers
-                };
+                return JsonConvert.DeserializeObject<ResponseProxy<CustomerModel>>(result);
             }
             else
             {
@@ -44,6 +37,30 @@ namespace Web.Proxy
                 };
             }
         }
+
+        public async Task<ResponseProxy<CustomerModel>> Get(int id)
+        {
+            var client = new HttpClient();
+            string baseUrl = ApiUrlHelper.BaseUrl();
+            client.BaseAddress = new Uri(baseUrl);
+
+            var url = string.Concat(baseUrl, "/Api", "/Customer/",id);
+            var response = client.GetAsync(url).Result;
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<ResponseProxy<CustomerModel>>(result);
+            }
+            else
+            {
+                return new ResponseProxy<CustomerModel>
+                {
+                    Code = (int)response.StatusCode,
+                    Message = "Error"
+                };
+            }
+        }
+
 
         public async Task<ResponseProxy<CustomerModel>> Add(CustomerModel model)
         {
@@ -60,13 +77,58 @@ namespace Web.Proxy
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var result = await response.Content.ReadAsStringAsync();
-                var exito = JsonConvert.DeserializeObject<bool>(result);
+                return JsonConvert.DeserializeObject<ResponseProxy<CustomerModel>>(result);
+            }
+            else
+            {
                 return new ResponseProxy<CustomerModel>
                 {
-                    Success = exito,
-                    Code = 0,
-                    Message = "Exito"
+                    Success = false,
+                    Code = (int)response.StatusCode,
+                    Message = "Error"
                 };
+            }
+        }
+        public async Task<ResponseProxy<CustomerModel>> Update(CustomerModel model)
+        {
+            var request = JsonConvert.SerializeObject(model);
+            var content = new StringContent(request, Encoding.UTF8, "application/json");
+
+            var client = new HttpClient();
+            var baseUrl = ApiUrlHelper.BaseUrl();
+            client.BaseAddress = new Uri(baseUrl);
+            var url = string.Concat(baseUrl, "/Api", "/Customer/", model.CustomerID);
+
+            var response = client.PutAsync(url, content).Result;
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<ResponseProxy<CustomerModel>>(result);
+            }
+            else
+            {
+                return new ResponseProxy<CustomerModel>
+                {
+                    Success = false,
+                    Code = (int)response.StatusCode,
+                    Message = "Error"
+                };
+            }
+        }
+        public async Task<ResponseProxy<CustomerModel>> Delete(int id)
+        {
+            var client = new HttpClient();
+            var baseUrl = ApiUrlHelper.BaseUrl();
+            client.BaseAddress = new Uri(baseUrl);
+            var url = string.Concat(baseUrl, "/Api", "/Customer/",id);
+
+            var response = client.DeleteAsync(url).Result;
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<ResponseProxy<CustomerModel>>(result);
             }
             else
             {
