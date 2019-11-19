@@ -55,6 +55,8 @@ namespace Services.Implentations
         }
         public EResponseBase<Customer> Add(Customer model)
         {
+            model.State = true;
+            model.CreateAt = DateTime.Now;
             EResponseBase<Customer> response = new EResponseBase<Customer>();
             try
             {
