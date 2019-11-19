@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Common.HttpHelpers;
+using Domain.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -15,25 +17,36 @@ namespace Web.Proxy
 {
     public class CustomerProxy
     {
-        public async Task<ResponseProxy<CustomerModel>> GetAll()
+        public async Task<EResponseBase<CustomerModel>> GetAll()
         {
-            var client = new HttpClient();
-            string baseUrl = ApiUrlHelper.BaseUrl();
-            client.BaseAddress = new Uri(baseUrl);
+            try
+            {
+                var client = new HttpClient();
+                string baseUrl = ApiUrlHelper.BaseUrl();
+                client.BaseAddress = new Uri(baseUrl);
 
-            var url = string.Concat(baseUrl, "/Api", "/Customer");
-            var response = client.GetAsync(url).Result;
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var result = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<ResponseProxy<CustomerModel>>(result);
-            }
-            else
-            {
-                return new ResponseProxy<CustomerModel>
+                var url = string.Concat(baseUrl, "/Api", "/Customer");
+                var response = client.GetAsync(url).Result;
+                if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    Code = (int)response.StatusCode,
-                    Message = "Error"
+                    var result = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<EResponseBase<CustomerModel>>(result);
+                }
+                else
+                {
+                    return new EResponseBase<CustomerModel>
+                    {
+                        Code = (int)response.StatusCode,
+                        Message = "Error"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new EResponseBase<CustomerModel>
+                {
+                    Code = 404,
+                    Message = ex.Message
                 };
             }
         }
@@ -44,7 +57,7 @@ namespace Web.Proxy
             string baseUrl = ApiUrlHelper.BaseUrl();
             client.BaseAddress = new Uri(baseUrl);
 
-            var url = string.Concat(baseUrl, "/Api", "/Customer/",id);
+            var url = string.Concat(baseUrl, "/Api", "/Customer/", id);
             var response = client.GetAsync(url).Result;
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -121,7 +134,7 @@ namespace Web.Proxy
             var client = new HttpClient();
             var baseUrl = ApiUrlHelper.BaseUrl();
             client.BaseAddress = new Uri(baseUrl);
-            var url = string.Concat(baseUrl, "/Api", "/Customer/",id);
+            var url = string.Concat(baseUrl, "/Api", "/Customer/", id);
 
             var response = client.DeleteAsync(url).Result;
 
@@ -140,7 +153,5 @@ namespace Web.Proxy
                 };
             }
         }
-
-
-    }
+    }   
 }
