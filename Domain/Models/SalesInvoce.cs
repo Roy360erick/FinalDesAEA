@@ -9,7 +9,13 @@ namespace Domain.Models
     {
         [Key]
         public int SalesInvoceID { get; set; }
-        
+
+        public string Number { get; set; }
+
+        public bool Payed { get; set; }
+
+        public int discount { get; set; }
+
         public string Reason { get; set; }
  
         public DateTime CreateAt { get; set; }
@@ -20,8 +26,8 @@ namespace Domain.Models
 
         public int SellerID { get; set; }
 
-        public  Customer Customer { get; set; }
-        public  Seller Seller { get; set; }
-        public  ICollection<SalesInvoceDetail> SalesInvoceDetails { get; set; }
+        public virtual Customer Customer { get; set; }
+        public virtual Seller Seller { get; set; }
+        public virtual ICollection<SalesInvoceDetail> SalesInvoceDetails { get; set; }
     }
 }

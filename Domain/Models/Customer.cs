@@ -29,6 +29,7 @@ namespace Domain.Models
         public string FullName => $"{Name} {LastName}";
 
         [JsonIgnore]
+        [NotMapped]
         public virtual ICollection<SalesInvoce> SalesInvoces { get; set; }
     }
 }

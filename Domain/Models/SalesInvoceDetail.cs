@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -26,6 +27,8 @@ namespace Domain.Models
         public int ProductID { get; set; }
 
         public virtual Product Product { get; set; }
+
+        [JsonIgnore]
         public virtual SalesInvoce SalesInvoce { get; set; }
 
 

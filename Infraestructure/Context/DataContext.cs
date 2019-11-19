@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Domain.StoreProcedure;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -12,11 +13,12 @@ namespace Infraestructure.Context
         {
             this.Configuration.LazyLoadingEnabled = false;
         }
-
+        
         public DbSet<Seller> Sellers { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<SalesInvoce> SalesInvoces { get; set; }
         public DbSet<SalesInvoceDetail> SalesInvoceDetails { get; set; }
         public DbSet<Customer> Customers { get; set; }
+        
     }
 }

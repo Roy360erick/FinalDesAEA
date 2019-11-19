@@ -1,12 +1,12 @@
 ﻿using Common.HttpHelpers;
 using Domain.Models;
+using Domain.StoreProcedure;
 using Infraestructure.Context;
 using Services.Interfaces;
 using System;
-using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Implentations
 {
@@ -33,14 +33,15 @@ namespace Services.Implentations
             }
         }
 
-        public EResponseBase<SalesInvoce> GetList()
+        public EResponseBase<SalesInvoceSP> GetList(int page)
         {
-            EResponseBase<SalesInvoce> response = new EResponseBase<SalesInvoce>();
+            EResponseBase<SalesInvoceSP> response = new EResponseBase<SalesInvoceSP>();
             try
             {
+                
                 using (var context = new DataContext())
                 {
-                    response.List = context.SalesInvoces.Include("Customer").Include("Seller").ToList();
+                    response.List = context.Database.SqlQuery<SalesInvoceSP>("pa_listSales", new SqlParameter("@page", 1)).ToList();
                 }
                 response.IsSuccess = true;
                 response.Message = "Success";
@@ -124,6 +125,11 @@ namespace Services.Implentations
                 response.IsSuccess = false;
                 return response;
             }
+        }
+
+        EResponseBase<SalesInvoce> IServiceBase<SalesInvoce>.GetList()
+        {
+            throw new NotImplementedException();
         }
     }
 }

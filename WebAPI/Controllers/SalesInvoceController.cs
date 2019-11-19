@@ -1,5 +1,6 @@
 ﻿using Common.HttpHelpers;
 using Domain.Models;
+using Domain.StoreProcedure;
 using Services.Implentations;
 using System;
 using System.Collections.Generic;
@@ -17,9 +18,9 @@ namespace WebAPI.Controllers
 
         // GET: api/SalesInvoce
         [HttpGet]
-        public JsonResult<EResponseBase<SalesInvoce>> Get()
+        public JsonResult<EResponseBase<SalesInvoceSP>> Get(int page, int actual )
         {
-            return Json(SalesInvoceService.GetList());
+            return Json(SalesInvoceService.GetList(page));
         }
 
         // GET: api/SalesInvoce/5
