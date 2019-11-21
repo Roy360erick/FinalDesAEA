@@ -30,7 +30,7 @@ namespace Web.Controllers
         public JsonResult Get(int id)
         {
             var response = Task.Run(() => proxy.Get(id));
-            return Json(response.Result.List, JsonRequestBehavior.AllowGet);
+            return Json(response.Result.Object, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
