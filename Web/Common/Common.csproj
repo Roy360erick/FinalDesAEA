@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiUrlHelpers\ApiUrl.cs" />
+    <Compile Include="Numerable.cs" />
     <Compile Include="HttpHelpers\EResponseBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

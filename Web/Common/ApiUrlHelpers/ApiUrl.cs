@@ -9,18 +9,49 @@ namespace Common.ApiUrlHelpers
 {
     public class ApiUrl
     {
+        public static string Url(int model)
+        {
+            string url = BaseUrl() + modelUrl(model);
+            return url;
+        }
+
         public static string BaseUrl()
         {
             string url = ConfigurationManager.AppSettings["Url"];
             string port = ConfigurationManager.AppSettings["Port"];
-            string baseUrl = url + port;
+            string api = ConfigurationManager.AppSettings["Api"];
+            string baseUrl = url + port + api;
 
             return baseUrl;
         }
 
-        public string aiuda()
+        public static string modelUrl(int model)
         {
-            return "asd";
+            string modelUrl = "";
+            switch (model)
+            {
+                case (int)Numerable.Customer:
+                    modelUrl = ConfigurationManager.AppSettings["Customer"];
+                    break;
+                case (int)Numerable.Product:
+                    modelUrl = ConfigurationManager.AppSettings["Product"];
+                    break;
+                case (int)Numerable.SalesInvoice:
+                    modelUrl = ConfigurationManager.AppSettings["SalesInvoice"];
+                    break;
+                case (int)Numerable.SalesInvoiceDetail:
+                    modelUrl = ConfigurationManager.AppSettings["SalesInvoiceDetail"];
+                    break;
+                case (int)Numerable.Seller:
+                    modelUrl = ConfigurationManager.AppSettings["Seller"];
+                    break;
+                default:
+                    break;
+            }
+
+            return modelUrl;
         }
+
+
     }
 }
