@@ -182,6 +182,10 @@
     <Compile Include="Models\CustomerModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\ProductModel.cs" />
+    <Compile Include="Models\SalesInvoiceDetailModel.cs" />
+    <Compile Include="Models\SalesInvoiceModel.cs" />
+    <Compile Include="Models\SellerModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Proxy\CustomerProxy.cs" />
     <Compile Include="Proxy\ProductProxy.cs" />

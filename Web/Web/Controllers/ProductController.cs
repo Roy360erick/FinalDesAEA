@@ -34,17 +34,17 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(CustomerModel customer)
+        public ActionResult Add(ProductModel model)
         {
-            var response = Task.Run(() => proxy.Add(customer));
+            var response = Task.Run(() => proxy.Add(model));
             string message = response.Result.Message;
             return Json(new { Message = message, JsonRequestBehavior.AllowGet });
         }
 
         [HttpPut]
-        public ActionResult Update(CustomerModel customer)
+        public ActionResult Update(ProductModel model)
         {
-            var response = Task.Run(() => proxy.Update(customer));
+            var response = Task.Run(() => proxy.Update(model));
             string message = response.Result.Message;
             return Json(new { Message = message, JsonRequestBehavior.AllowGet });
         }
