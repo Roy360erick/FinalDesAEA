@@ -1,0 +1,71 @@
+﻿
+@{
+    ViewBag.Title = "Clientes";
+}
+
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Lista de Clientes</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th width="60%">Nombre completo</th>
+                        <th width="10%">Edad</th>
+                        <th width="14%">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            function calcularEdad(fecha) {
+                var hoy = new Date();
+                var cumpleanos = new Date(fecha);
+                var edad = hoy.getFullYear() - cumpleanos.getFullYear();
+                var m = hoy.getMonth() - cumpleanos.getMonth();
+
+                if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) {
+                    edad--;
+                }
+
+                return edad;
+            }
+
+            $.ajax({
+                url: "/Customer/GetAll",
+                success: function (data) {
+                    console.log(data);
+                    for (var i = 0; i < data.length; i++) {
+                        data[i].Birthdate = calcularEdad(moment(data[i].Birthdate).format());
+                    }
+                    $('#dataTable').dataTable({
+                        destroy: true,
+                        data: data,
+                        columns: [
+                            { "data": "FullName" },
+                            { "data": "Birthdate" },
+                            {
+                                "defaultContent": "<button class='btn btn-danger btn-circle mr-2'><i class='fas fa-trash'></i></button>" +
+                                                  "<button class='btn btn-danger btn-circle mr-2'><i class='fas fa-trash'></i></button>" +
+                                                  "<button class='btn btn-danger btn-circle mr-2'><i class='fas fa-trash'></i></button>"
+                            }
+                        ],
+                    });
+                }
+            });
+        });
+    </script>
+}
