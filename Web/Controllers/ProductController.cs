@@ -9,11 +9,11 @@ using Web.Proxy;
 
 namespace Web.Controllers
 {
-    public class CustomerController : Controller
+    public class ProductController : Controller
     {
-        CustomerProxy proxy = new CustomerProxy();
+        ProductProxy proxy = new ProductProxy();
 
-        // GET: Customer
+        // GET: Product
         public ActionResult Index()
         {
             return View();
@@ -34,17 +34,17 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(Customer_Request customer)
+        public ActionResult Add(Product_Request model)
         {
-            var response = Task.Run(() => proxy.Add(customer));
+            var response = Task.Run(() => proxy.Add(model));
             string message = response.Result.Message;
             return Json(new { Message = message, JsonRequestBehavior.AllowGet });
         }
 
         [HttpPut]
-        public ActionResult Update(Customer_Request customer)
+        public ActionResult Update(Product_Request model)
         {
-            var response = Task.Run(() => proxy.Update(customer));
+            var response = Task.Run(() => proxy.Update(model));
             string message = response.Result.Message;
             return Json(new { Message = message, JsonRequestBehavior.AllowGet });
         }
@@ -56,6 +56,5 @@ namespace Web.Controllers
             string message = response.Result.Message;
             return Json(new { Message = message, JsonRequestBehavior.AllowGet });
         }
-
     }
 }

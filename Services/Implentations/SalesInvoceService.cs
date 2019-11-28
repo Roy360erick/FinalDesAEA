@@ -19,7 +19,7 @@ namespace Services.Implentations
             {
                 using (var context = new DataContext())
                 {
-                    response.Object = context.SalesInvoces.Where(x => x.SalesInvoceID == ID).FirstOrDefault();
+                    response.Object = context.SalesInvoces.Where(x => x.SalesInvoceID == ID && x.State == true).FirstOrDefault();
                 }
                 response.IsSuccess = true;
                 response.Message = "Success";
@@ -112,7 +112,7 @@ namespace Services.Implentations
                 using (var context = new DataContext())
                 {
                     var item = context.SalesInvoces.Where(x => x.SalesInvoceID == ID).FirstOrDefault();
-                    context.SalesInvoces.Remove(item);
+                    item.State = false;
                     context.SaveChanges();
                 }
                 response.IsSuccess = true;
