@@ -90,24 +90,25 @@ namespace Web.Proxy
                 var result = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<EResponseBase<Customer_Response>>(result);
             }
-            else
+
+            return new EResponseBase<Customer_Response>
             {
-                return new EResponseBase<Customer_Response>
-                {
-                    IsSuccess = false,
-                    Code = (int)response.StatusCode,
-                    Message = "Error"
-                };
-            }
+                IsSuccess = false,
+                Code = (int)response.StatusCode,
+                Message = "Error"
+            };
+
         }
         public async Task<EResponseBase<Customer_Response>> Update(Customer_Request model)
         {
+
             var request = JsonConvert.SerializeObject(model);
             var content = new StringContent(request, Encoding.UTF8, "application/json");
 
             var client = new HttpClient();
             client.BaseAddress = new Uri(baseUrl);
-            var url = string.Concat(baseUrl, model.CustomerID);
+
+            var url = string.Concat(baseUrl);
 
             var response = client.PutAsync(url, content).Result;
 
@@ -116,15 +117,12 @@ namespace Web.Proxy
                 var result = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<EResponseBase<Customer_Response>>(result);
             }
-            else
+            return new EResponseBase<Customer_Response>
             {
-                return new EResponseBase<Customer_Response>
-                {
-                    IsSuccess = false,
-                    Code = (int)response.StatusCode,
-                    Message = "Error"
-                };
-            }
+                IsSuccess = false,
+                Code = (int)response.StatusCode,
+                Message = "Error"
+            };
         }
         public async Task<EResponseBase<Customer_Response>> Delete(int id)
         {

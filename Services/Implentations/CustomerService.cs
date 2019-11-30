@@ -19,7 +19,7 @@ namespace Services.Implentations
             {
                 using (var context = new DataContext())
                 {
-                    response.Object = context.Customers.Where(x => x.CustomerID == ID).FirstOrDefault();
+                    response.Object = context.Customers.Where(x => x.CustomerID == ID && x.State == true).FirstOrDefault();
                 }
                 response.IsSuccess = true;
                 response.Message = "Success";
@@ -40,7 +40,7 @@ namespace Services.Implentations
             {
                 using (var context = new DataContext())
                 {
-                    response.List = context.Customers.ToList();
+                    response.List = context.Customers.Where(x => x.State == true).ToList();
                 }
                 response.IsSuccess = true;
                 response.Message = "Success";
@@ -84,7 +84,10 @@ namespace Services.Implentations
             {
                 using (var context = new DataContext())
                 {
-                    context.Customers.Add(model);
+                    var item = context.Customers.Find(model.CustomerID);
+                    item.Name = model.Name;
+                    item.LastName = model.LastName;
+                    item.Birthdate = model.Birthdate;
                     context.SaveChanges();
                 }
                 response.IsSuccess = true;
@@ -107,7 +110,7 @@ namespace Services.Implentations
                 using (var context = new DataContext())
                 {
                     var item = context.Customers.Where(x => x.CustomerID == ID).FirstOrDefault();
-                    context.Customers.Remove(item);
+                    item.State = false;
                     context.SaveChanges();
                 }
                 response.IsSuccess = true;

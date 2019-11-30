@@ -1,4 +1,6 @@
-﻿using Models.Request;
+﻿using Common.HttpHelpers;
+using Models.Request;
+using Models.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,22 +36,23 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(Customer_Request customer)
+        public  ActionResult Add(Customer_Request customer)
         {
-            var response = Task.Run(() => proxy.Add(customer));
-            string message = response.Result.Message;
-            return Json(new { Message = message, JsonRequestBehavior.AllowGet });
+            if (customer.CustomerID == 0)
+            {
+                 var response = Task.Run(() => proxy.Add(customer));
+                return Json(response, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                 var response = Task.Run(() => proxy.Update(customer));
+                return Json(response, JsonRequestBehavior.AllowGet);
+            }
+            
         }
 
-        [HttpPut]
-        public ActionResult Update(Customer_Request customer)
-        {
-            var response = Task.Run(() => proxy.Update(customer));
-            string message = response.Result.Message;
-            return Json(new { Message = message, JsonRequestBehavior.AllowGet });
-        }
 
-        [HttpDelete]
+        [HttpPost]
         public ActionResult Delete(int id)
         {
             var response = Task.Run(() => proxy.Delete(id));
