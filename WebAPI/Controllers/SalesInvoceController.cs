@@ -18,9 +18,9 @@ namespace WebAPI.Controllers
 
         // GET: api/SalesInvoce
         [HttpGet]
-        public JsonResult<EResponseBase<SalesInvoceSP>> Get(int page, int actual )
+        public JsonResult<EResponseBase<SalesInvoceSP>> Get()
         {
-            return Json(SalesInvoceService.GetList(page));
+            return Json(SalesInvoceService.GetList());
         }
 
         // GET: api/SalesInvoce/5

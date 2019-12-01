@@ -15,6 +15,7 @@
 
     <!-- Custom styles for this template-->
     @Styles.Render("~/Content/css/sb-admin-2.min.css")
+    @Styles.Render("~/Content/css/bootstrap-combobox.css")
     @Styles.Render("~/Content/vendor/datatables/dataTables.bootstrap4.min.css")
 
 </head>
@@ -40,7 +41,7 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="/SalesInvoice/Index">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Ventas</span>
                 </a>
@@ -56,7 +57,7 @@
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="/Customer/Index">
+                <a class="nav-link collapsed" href="/Product/Index">
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Productos</span>
                 </a>
@@ -72,7 +73,7 @@
 
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="/Customer/Index">
+                <a class="nav-link collapsed" href="/Seller/Index">
                     <i class="fas fa-fw fa-wrench"></i>
                     <span>Vendedores</span>
                 </a>
@@ -336,6 +337,7 @@
 
     <!-- Custom scripts for all pages-->
     @Scripts.Render("~/Content/js/sb-admin-2.min.js")
+    @Scripts.Render("~/Content/js/bootstrap-combobox.js")
 
     <!-- Page level plugins -->
     @Scripts.Render("~/Content/vendor/chart.js/Chart.min.js")

@@ -33,7 +33,7 @@ namespace Services.Implentations
             }
         }
 
-        public EResponseBase<SalesInvoceSP> GetList(int page)
+        public EResponseBase<SalesInvoceSP> GetList()
         {
             EResponseBase<SalesInvoceSP> response = new EResponseBase<SalesInvoceSP>();
             try
@@ -41,7 +41,7 @@ namespace Services.Implentations
                 
                 using (var context = new DataContext())
                 {
-                    response.List = context.Database.SqlQuery<SalesInvoceSP>("pa_listSales", new SqlParameter("@page", 1)).ToList();
+                    response.List = context.Database.SqlQuery<SalesInvoceSP>("pa_listSales").ToList();
                 }
                 response.IsSuccess = true;
                 response.Message = "Success";

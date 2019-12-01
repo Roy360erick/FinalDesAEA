@@ -36,20 +36,19 @@ namespace Web.Controllers
         [HttpPost]
         public ActionResult Add(Product_Request model)
         {
-            var response = Task.Run(() => proxy.Add(model));
-            string message = response.Result.Message;
-            return Json(new { Message = message, JsonRequestBehavior.AllowGet });
+            if (model.ProductID == 0)
+            {
+                var response = Task.Run(() => proxy.Add(model));
+                return Json(response, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                var response = Task.Run(() => proxy.Update(model));
+                return Json(response, JsonRequestBehavior.AllowGet);
+            }
         }
 
-        [HttpPut]
-        public ActionResult Update(Product_Request model)
-        {
-            var response = Task.Run(() => proxy.Update(model));
-            string message = response.Result.Message;
-            return Json(new { Message = message, JsonRequestBehavior.AllowGet });
-        }
-
-        [HttpDelete]
+        [HttpPost]
         public ActionResult Delete(int id)
         {
             var response = Task.Run(() => proxy.Delete(id));

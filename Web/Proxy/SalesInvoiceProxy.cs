@@ -13,33 +13,31 @@ namespace Web.Proxy
 {
     public class SalesInvoiceProxy
     {
-        static string baseUrl = ApiUrl.Url((int)Numerable.SalesInvoice);
-        public async Task<EResponseBase<SalesInvoce_Response>> GetAll()
+        private string _urlBase = ConstantsUrl.UrlBase;
+        private string _endPoint = $"{ConstantsUrl.Prefix}{ConstantsUrl.SalesInvoice}";
+
+        public async Task<EResponseBase<SalesInvoiceSP_Response>> GetAll()
         {
             try
             {
                 var client = new HttpClient();
-                client.BaseAddress = new Uri(baseUrl);
-
-                var url = string.Concat(baseUrl);
-                var response = client.GetAsync(url).Result;
-                if (response.StatusCode == HttpStatusCode.OK)
+                client.BaseAddress = new Uri(_urlBase);
+                var response = await client.GetAsync(_endPoint);
+                var answer = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
                 {
-                    var result = await response.Content.ReadAsStringAsync();
-                    return JsonConvert.DeserializeObject<EResponseBase<SalesInvoce_Response>>(result);
-                }
-                else
-                {
-                    return new EResponseBase<SalesInvoce_Response>
+                    return new EResponseBase<SalesInvoiceSP_Response>
                     {
-                        Code = (int)response.StatusCode,
+                        Code = 404,
                         Message = "Error"
                     };
                 }
+                var obj = JsonConvert.DeserializeObject<EResponseBase<SalesInvoiceSP_Response>>(answer);
+                return obj;
             }
             catch (Exception ex)
             {
-                return new EResponseBase<SalesInvoce_Response>
+                return new EResponseBase<SalesInvoiceSP_Response>
                 {
                     Code = 404,
                     Message = ex.Message
@@ -50,9 +48,9 @@ namespace Web.Proxy
         public async Task<EResponseBase<SalesInvoce_Response>> Get(int id)
         {
             var client = new HttpClient();
-            client.BaseAddress = new Uri(baseUrl);
+            client.BaseAddress = new Uri(_urlBase);
 
-            var url = string.Concat(baseUrl, id);
+            var url = string.Concat(_endPoint, id);
             var response = client.GetAsync(url).Result;
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -76,8 +74,8 @@ namespace Web.Proxy
             var content = new StringContent(request, Encoding.UTF8, "application/json");
 
             var client = new HttpClient();
-            client.BaseAddress = new Uri(baseUrl);
-            var url = string.Concat(baseUrl);
+            client.BaseAddress = new Uri(_urlBase);
+            var url = string.Concat(_endPoint);
 
             var response = client.PostAsync(url, content).Result;
 
@@ -102,8 +100,8 @@ namespace Web.Proxy
             var content = new StringContent(request, Encoding.UTF8, "application/json");
 
             var client = new HttpClient();
-            client.BaseAddress = new Uri(baseUrl);
-            var url = string.Concat(baseUrl, model.SalesInvoceID);
+            client.BaseAddress = new Uri(_urlBase);
+            var url = string.Concat(_endPoint, model.SalesInvoceID);
 
             var response = client.PutAsync(url, content).Result;
 
@@ -125,8 +123,8 @@ namespace Web.Proxy
         public async Task<EResponseBase<SalesInvoce_Response>> Delete(int id)
         {
             var client = new HttpClient();
-            client.BaseAddress = new Uri(baseUrl);
-            var url = string.Concat(baseUrl, id);
+            client.BaseAddress = new Uri(_urlBase);
+            var url = string.Concat(_endPoint, id);
 
             var response = client.DeleteAsync(url).Result;
 
