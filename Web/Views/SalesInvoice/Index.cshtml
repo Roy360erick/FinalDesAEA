@@ -3,5 +3,249 @@
     ViewBag.Title = "Facturas";
 }
 
-<h2>Index</h2>
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <div class="row">
+            <h6 class="col-md-10 m-0 font-weight-bold text-primary">Lista de Facturas</h6>
+            <button type="button" class="col-md-2 btn btn-primary" onclick="lanzar()">
+                Nueva Factura
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th width="8%">Nro Factura</th>
+                        <th width="8%">Fecha de Venta</th>
+                        <th width="20%">Vendedor</th>
+                        <th width="20%">Cliente</th>
+                        <th width="5%">Subtotal</th>
+                        <th width="5%">Descuento</th>
+                        <th width="5%">Total</th>
+                        <th width="5%">Pagado</th>
+                        <th width="20%">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Button trigger modal -->
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Registrar Cliente</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="form1">
+                <div class="modal-body">
+                    <input type="hidden" value="" name="salesInvoceID" id="salesInvoceID" />
+                    <div class="form-group">
+                        <label for="customer">Cliente</label>
+                        <select class="form-control" id="customer" name="customer">
+                            <option value="null">---Seleccionar---</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">Apellidos</label>
+                        <input type="text" class="form-control" name="lastname" id="lastname" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="birthdate">Fecha de Nacimiento</label>
+                        <input type="text" class="form-control" name="birthdate" id="birthdate" placeholder="">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            
 
+            var llenarClientes = function () {
+                $.ajax({
+                    type: "GET",
+                    url: '/Customer/GetAll',
+                    dataType: "json",
+                    success: function (data) {
+                        console.log(data)
+                        $.each(data, function (key, registro) {
+                            $("#customer").append('<option value=' + registro.CustomerID + '>' + registro.FullName + '</option>');
+                        });
+                        $('#customer').combobox()
+                    },
+                    error: function (data) {
+                        alert('error');
+                    }
+                });
+            }
+
+            var obtener_data_editar = function (tbody, table) {
+                $(tbody).on("click", "button.editar", function () {
+                    var data = table.row($(this).parents("tr")).data();
+                    console.log(data);
+                    $("#exampleModalLabel").text("Actualizar Cliente");
+                    $("#customerID").val(data.CustomerID);
+                    $("#name").val(data.Name);
+                    $("#lastname").val(data.LastName);
+                    $("#birthdate").val(moment(data.Birthdate).format("MM/DD/YYYY"));
+                    $("#exampleModal").modal('toggle');
+                });
+            }
+
+            lanzar = function () {
+                limpiarForm();
+                $("#exampleModal").modal('toggle');
+            }
+
+            var limpiarForm = function () {
+                $("#exampleModalLabel").text("Registar Cliente");
+                $("#customerID").val("");
+                $("#name").val("");
+                $("#lastname").val("");
+                $("#birthdate").val("");
+            }
+
+            var obtener_data_eliminar = function (tbody, table) {
+                $(tbody).on("click", "button.eliminar", function () {
+                    var data = table.row($(this).parents("tr")).data();
+                    Swal.fire({
+                        title: '¿Estas seguro de eliminar este registro?',
+                        text: "Una vez eliminado no podras recuperalo!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Si, Eliminar',
+                        cancelButtonText: "Cancelar"
+                    }).then((result) => {
+                        if (result.value) {
+                            $.ajax({
+                                url: '/Customer/Delete',
+                                type: 'POST',
+                                data: { id: data.CustomerID },
+                                success: function (result) {
+                                    cargarLista();
+                                    Swal.fire('Eliminado!', 'El registro fue eliminado correctamente.', 'success');
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+
+            var cargarLista = function () {
+                $.ajax({
+                    url: "/SalesInvoice/GetAll",
+                    success: function (data) {
+                        console.log(data);
+                        for (var i = 0; i < data.length; i++) {
+                            data[i].CreateAt1 = moment(data[i].CreateAt).format("MM/DD/YYYY");
+                        }
+                        var table = $('#dataTable').DataTable({
+                            destroy: true,
+                            "language": {
+                                "decimal": ",",
+                                "thousands": ".",
+                                "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                                "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                                "infoPostFix": "",
+                                "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                                "loadingRecords": "Cargando...",
+                                "lengthMenu": "Mostrar _MENU_ registros",
+                                "paginate": {
+                                    "first": "Primero",
+                                    "last": "Último",
+                                    "next": "Siguiente",
+                                    "previous": "Anterior"
+                                },
+                                "processing": "Procesando...",
+                                "search": "Buscar:",
+                                "searchPlaceholder": "Término de búsqueda",
+                                "zeroRecords": "No se encontraron resultados",
+                                "emptyTable": "Ningún dato disponible en esta tabla",
+                                "aria": {
+                                    "sortAscending": ": Activar para ordenar la columna de manera ascendente",
+                                    "sortDescending": ": Activar para ordenar la columna de manera descendente"
+                                },
+                                "buttons": {
+                                    "create": "Nuevo",
+                                    "edit": "Cambiar",
+                                    "remove": "Borrar",
+                                    "copy": "Copiar",
+                                    "csv": "fichero CSV",
+                                    "excel": "tabla Excel",
+                                    "pdf": "documento PDF",
+                                    "print": "Imprimir",
+                                    "colvis": "Visibilidad columnas",
+                                    "collection": "Colección",
+                                    "upload": "Seleccione fichero...."
+                                },
+                                "select": {
+                                    "rows": {
+                                        _: '%d filas seleccionadas',
+                                        0: 'clic fila para seleccionar',
+                                        1: 'una fila seleccionada'
+                                    }
+                                }
+                            },
+                            data: data,
+                            columns: [
+                                { "data": "Number"},
+                                { "data": "CreateAt1"},
+                                { "data": "Seller"},
+                                { "data": "Customer"}, 
+                                { "data": "SubTotal"}, 
+                                { "data": "Discount"}, 
+                                { "data": "Total" }, 
+                                { "data": "Payed" }, 
+                                {
+                                    "defaultContent": "<button type='button' class='btn btn-success btn-circle editar mr-2'><i class='fas fa-pencil-alt'></i></button>" +
+                                        "<button class='btn btn-danger btn-circle eliminar mr-2'><i class='fas fa-trash'></i></button>"
+                                }
+                            ],
+                        });
+                        obtener_data_editar("#dataTable tbody", table);
+                        obtener_data_eliminar("#dataTable tbody", table);
+                    }
+                });
+            }
+
+
+
+            $("#form1").on("submit", function () {
+                $.ajax({
+                    url: '/Customer/Add',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (result) {
+                        limpiarForm();
+                        setTimeout(function () {
+                            cargarLista();
+                        }, 3000)
+
+                        Swal.fire('Eliminado!', 'El registro fue eliminado correctamente.', 'success');
+                    }
+                });
+            });
+
+            cargarLista();
+            llenarClientes();
+        });
+    </script>
+}

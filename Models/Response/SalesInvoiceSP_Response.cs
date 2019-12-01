@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Domain.StoreProcedure
+namespace Models.Response
 {
-    public class SalesInvoceSP
+    public class SalesInvoiceSP_Response
     {
         public int SalesInvoceID { get; set; }
 

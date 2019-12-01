@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="HttpHelpers\ApiUrl.cs" />
+    <Compile Include="HttpHelpers\ConstantsUrl.cs" />
     <Compile Include="HttpHelpers\EResponseBase.cs" />
     <Compile Include="Numerable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

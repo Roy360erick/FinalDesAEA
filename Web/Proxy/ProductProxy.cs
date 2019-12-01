@@ -13,16 +13,15 @@ namespace Web.Proxy
 {
     public class ProductProxy
     {
-        static string baseUrl = ApiUrl.Url((int)Numerable.Product);
+        private string _urlBase = ConstantsUrl.UrlBase;
+        private string _endPoint = $"{ConstantsUrl.Prefix}{ConstantsUrl.Product}";
         public async Task<EResponseBase<Product_Response>> GetAll()
         {
             try
             {
                 var client = new HttpClient();
-                client.BaseAddress = new Uri(baseUrl);
-
-                var url = string.Concat(baseUrl);
-                var response = client.GetAsync(url).Result;
+                client.BaseAddress = new Uri(_urlBase);
+                var response = client.GetAsync(_endPoint).Result;
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     var result = await response.Content.ReadAsStringAsync();
@@ -50,9 +49,9 @@ namespace Web.Proxy
         public async Task<EResponseBase<Product_Response>> Get(int id)
         {
             var client = new HttpClient();
-            client.BaseAddress = new Uri(baseUrl);
+            client.BaseAddress = new Uri(_urlBase);
 
-            var url = string.Concat(baseUrl, id);
+            var url = string.Concat(_endPoint, id);
             var response = client.GetAsync(url).Result;
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -76,8 +75,8 @@ namespace Web.Proxy
             var content = new StringContent(request, Encoding.UTF8, "application/json");
 
             var client = new HttpClient();
-            client.BaseAddress = new Uri(baseUrl);
-            var url = string.Concat(baseUrl);
+            client.BaseAddress = new Uri(_urlBase);
+            var url = string.Concat(_endPoint);
 
             var response = client.PostAsync(url, content).Result;
 
@@ -102,8 +101,8 @@ namespace Web.Proxy
             var content = new StringContent(request, Encoding.UTF8, "application/json");
 
             var client = new HttpClient();
-            client.BaseAddress = new Uri(baseUrl);
-            var url = string.Concat(baseUrl, model.ProductID);
+            client.BaseAddress = new Uri(_urlBase);
+            var url = string.Concat(_endPoint, model.ProductID);
 
             var response = client.PutAsync(url, content).Result;
 
@@ -125,8 +124,8 @@ namespace Web.Proxy
         public async Task<EResponseBase<Product_Response>> Delete(int id)
         {
             var client = new HttpClient();
-            client.BaseAddress = new Uri(baseUrl);
-            var url = string.Concat(baseUrl, id);
+            client.BaseAddress = new Uri(_urlBase);
+            var url = string.Concat(_endPoint, id);
 
             var response = client.DeleteAsync(url).Result;
 

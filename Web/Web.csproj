@@ -140,6 +140,8 @@
     <Content Include="Content\css\sb-admin-2.css" />
     <Content Include="Content\css\sb-admin-2.min.css" />
     <Content Include="Content\img\undraw_posting_photo.svg" />
+    <Content Include="Content\css\bootstrap-combobox.css" />
+    <Content Include="Content\js\bootstrap-combobox.js" />
     <Content Include="Content\js\demo\chart-area-demo.js" />
     <Content Include="Content\js\demo\chart-bar-demo.js" />
     <Content Include="Content\js\demo\chart-pie-demo.js" />
