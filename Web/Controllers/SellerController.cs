@@ -35,20 +35,20 @@ namespace Web.Controllers
         [HttpPost]
         public ActionResult Add(Seller_Request model)
         {
-            var response = Task.Run(() => proxy.Add(model));
-            string message = response.Result.Message;
-            return Json(new { Message = message, JsonRequestBehavior.AllowGet });
+            if (model.SellerID == 0)
+            {
+                var response = Task.Run(() => proxy.Add(model));
+                return Json(response, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                var response = Task.Run(() => proxy.Update(model));
+                return Json(response, JsonRequestBehavior.AllowGet);
+            }
         }
 
-        [HttpPut]
-        public ActionResult Update(Seller_Request model)
-        {
-            var response = Task.Run(() => proxy.Update(model));
-            string message = response.Result.Message;
-            return Json(new { Message = message, JsonRequestBehavior.AllowGet });
-        }
 
-        [HttpDelete]
+        [HttpPost]
         public ActionResult Delete(int id)
         {
             var response = Task.Run(() => proxy.Delete(id));

@@ -3,5 +3,243 @@
     ViewBag.Title = "Vendedores";
 }
 
-<h2>Index</h2>
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <div class="row">
+            <h6 class="col-md-10 m-0 font-weight-bold text-primary">Lista de Vendedores</h6>
+            <button type="button" class="col-md-2 btn btn-primary" onclick="lanzar()">
+                Nuevo Vendedor
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th width="40%">Nombre</th>
+                        <th width="25%">Email</th>
+                        <th width="25%">Fecha de registro</th>
+                        <th width="10%">Accion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Button trigger modal -->
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Registrar Vendedor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="form1">
+                <div class="modal-body">
+                    <input type="hidden" value="" name="sellerID" id="sellerID" />
+                    <div class="form-group">
+                        <label for="name">Nombres</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">Apellidos</label>
+                        <input type="text" class="form-control" name="lastname" id="lastname" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">Correo</label>
+                        <input type="email" class="form-control" name="email" id="email" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="birthdate">Fecha de Nacimiento</label>
+                        <input type="text" class="form-control" name="birthdate" id="birthdate" placeholder="">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script type="text/javascript">
 
+        $(document).ready(function () {
+            $("#birthdate").datepicker({
+                changeYear: true
+            });
+
+            var obtener_data_editar = function (tbody, table) {
+                $(tbody).on("click", "button.editar", function () {
+                    var data = table.row($(this).parents("tr")).data();
+                    console.log(data)
+                    $("#exampleModalLabel").text("Actualizar Vendedor");
+                    $("#sellerID").val(data.SellerID);
+                    $("#name").val(data.Name);
+                    $("#lastname").val(data.LastName);
+                    $("#email").val(data.Email);
+                    $("#birthdate").val(moment(data.Birthdate).format("MM/DD/YYYY"));
+                    $("#exampleModal").modal('show');
+                });
+            }
+
+            lanzar = function () {
+                limpiarForm();
+                $("#exampleModal").modal('toggle');
+            }
+
+            var limpiarForm = function () {
+                $("#exampleModalLabel").text("Registar Vendedor");
+                $("#sellerID").val("");
+                $("#name").val("");
+                $("#lastname").val("");
+                $("#email").val("");
+                $("#birthdate").val("");
+            }
+
+            var obtener_data_eliminar = function (tbody, table) {
+                $(tbody).on("click", "button.eliminar", function () {
+                    var data = table.row($(this).parents("tr")).data();
+                    Swal.fire({
+                        title: '¿Estas seguro de eliminar este registro?',
+                        text: "Una vez eliminado no podras recuperalo!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Si, Eliminar',
+                        cancelButtonText:"Cancelar"
+                    }).then((result) => {
+                        if (result.value) {
+                            $.ajax({
+                                url: '/Seller/Delete',
+                                type: 'POST',
+                                data: {id : data.SellerID},
+                                success: function (result) {
+                                    cargarLista();
+                                    Swal.fire('Eliminado!','El registro fue eliminado correctamente.', 'success');
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+
+            var cargarLista = function () {
+                $.ajax({
+                    url: "/Seller/GetAll",
+                    success: function (data) {
+                        data.forEach(elm =>
+                            elm.CreateAt = new Date(parseInt(elm.CreateAt.substr(6))).toDateString()
+                            );
+                    var table = $('#dataTable').DataTable({
+                        destroy: true,
+                        "language": {
+                            "decimal": ",",
+                            "thousands": ".",
+                            "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                            "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                            "infoPostFix": "",
+                            "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                            "loadingRecords": "Cargando...",
+                            "lengthMenu": "Mostrar _MENU_ registros",
+                            "paginate": {
+                                "first": "Primero",
+                                "last": "Último",
+                                "next": "Siguiente",
+                                "previous": "Anterior"
+                            },
+                            "processing": "Procesando...",
+                            "search": "Buscar:",
+                            "searchPlaceholder": "Término de búsqueda",
+                            "zeroRecords": "No se encontraron resultados",
+                            "emptyTable": "Ningún dato disponible en esta tabla",
+                            "aria": {
+                                "sortAscending": ": Activar para ordenar la columna de manera ascendente",
+                                "sortDescending": ": Activar para ordenar la columna de manera descendente"
+                            },
+                            "buttons": {
+                                "create": "Nuevo",
+                                "edit": "Cambiar",
+                                "remove": "Borrar",
+                                "copy": "Copiar",
+                                "csv": "fichero CSV",
+                                "excel": "tabla Excel",
+                                "pdf": "documento PDF",
+                                "print": "Imprimir",
+                                "colvis": "Visibilidad columnas",
+                                "collection": "Colección",
+                                "upload": "Seleccione fichero...."
+                            },
+                            "select": {
+                                "rows": {
+                                    _: '%d filas seleccionadas',
+                                    0: 'clic fila para seleccionar',
+                                    1: 'una fila seleccionada'
+                                }
+                            }
+                        },
+                        data: data,
+                        columns: [
+                            { "data": "FullName" },
+                            { "data": "Email" },
+                            { "data": "CreateAt" },
+                            {
+                                "defaultContent":  "<button type='button' class='btn btn-success btn-circle editar mr-2'><i class='fas fa-pencil-alt'></i></button>" +
+                                                    "<button class='btn btn-danger btn-circle eliminar mr-2'><i class='fas fa-trash'></i></button>"
+                            }
+                        ],
+                    });
+                    obtener_data_editar("#dataTable tbody", table);
+                    obtener_data_eliminar("#dataTable tbody", table);
+                }
+                });
+            }
+
+
+
+            $("#form1").on("submit", function () {
+                event.preventDefault();
+                $.ajax({
+                    url: '/Seller/Add',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (result) {
+                        if (result.Result.IsSuccess) {
+                            limpiarForm();
+                            $("#exampleModal").modal('hide');
+                            Swal.fire('Info!', 'Proceso realizado correctamente.', 'success');
+                            setTimeout(function () {
+                                location.reload();
+                            }, 3000)
+                        } else {
+                            limpiarForm();
+                            $("#exampleModal").modal('hide');
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!'
+                            })
+                        }
+
+                    }
+                });
+            });
+            cargarLista();
+        });
+
+        function DateFormat(data) {
+            data.forEach(elem =>
+                elem.CreateAt = new Date(parseInt(elem.CreateAt.substr(6))).toDateString());
+            return data;
+        }
+    </script>
+}

@@ -41,7 +41,7 @@ namespace WebAPI.Controllers
         [HttpPut]
         public JsonResult<EResponseBase<Seller>> Put(Seller Seller)
         {
-            return Json(SellerService.Add(Seller));
+            return Json(SellerService.Update(Seller));
         }
 
         // DELETE: api/Seller/5
