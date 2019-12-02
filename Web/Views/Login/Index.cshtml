@@ -44,12 +44,12 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Bienvenidos!</h1>
                                     </div>
-                                    <form class="user">
+                                    <form id="LoginForm" class="user">
                                         <div class="form-group">
-                                            <input type="email" class="form-control form-control-user" id="txtUsername" aria-describedby="emailHelp" placeholder="Ingresar tu Correo">
+                                            <input type="email" class="form-control form-control-user" id="txtUsername" aria-describedby="emailHelp" placeholder="Ingresar tu Correo" required>
                                         </div>
                                         <div class="form-group">
-                                            <input type="password" class="form-control form-control-user" id="txtPassword" placeholder="Ingresa tu Contraseña">
+                                            <input type="password" class="form-control form-control-user" id="txtPassword" placeholder="Ingresa tu Contraseña" required>
                                         </div>
                                         <div class="form-group">
                                             <div class="custom-control custom-checkbox small">
@@ -57,9 +57,7 @@
                                                 <label class="custom-control-label" for="customCheck">Recordar</label>
                                             </div>
                                         </div>
-                                        <a href="index.html" type="button" id="btnLogin" class="btn btn-primary btn-user btn-block">
-                                            Ingresar
-                                        </a>
+                                        <button id="btnLogin" class="btn btn-primary btn-user btn-block" type="submit">Iniciar Sesión</button>
                                         <hr>
                                       
                                     </form>
@@ -92,29 +90,82 @@
     @Scripts.Render("~/Content/js/sb-admin-2.min.js")
 
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#linkclose').click(function () {
-                $('#divError').hide('fade');
-            });
-            $('#btnLogin'.click(function(){
-                $.ajax({
-                    url: '/token',
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: {
-                        email: $('#txtUsername').val(),
-                        password: $('#txtPassword').val(),
-                        grant_type: 'password'
-                    },
-                    succes: function (response) {
-                        sessionStorage.setItem('accessTokem', response.access_token);
-                        window.location.href = "/Home";
-                    },
-                error: function (jqXHR) {
-                    $('#divErrorText').text(jqXHR.responseText);
-                    $('#divError').show('fade');
+        //$(document).ready(function () {
+        //    $('#linkclose').click(function () {
+        //        $('#divError').hide('fade');
+        //    });
+        //    $('#btnLogin'.click(function(){
+        //        $.ajax({
+        //            url: '/token',
+        //            method: 'POST',
+        //            contentType: 'application/json',
+        //            data: {
+        //                username: $('#txtUsername').val(),
+        //                password: $('#txtPassword').val(),
+        //                grant_type: 'password'
+        //            },
+        //            succes: function (response) {
+        //                console.log(response);
+        //                sessionStorage.setItem('accessTokem', response.access_token);
+        //                window.location.href = "/Home";
+        //            },
+        //        error: function (jqXHR) {
+        //            $('#divErrorText').text(jqXHR.responseText);
+        //            $('#divError').show('fade');
+        //        }
+        //    });
+
+
+
+        //$(document).ready(function () {
+        //    $('#LoginForm').submit(function (event) {
+        //        event.preventDefault();
+        //        let data = {
+        //            grant_type: 'password',
+        //            username: $('#txtUsername').val(),
+        //            password: $('#txtPassword').val()
+        //        }
+        //        console.log(data);
+
+        //        $.ajax({
+        //            type: 'POST',
+        //            url: 'http://localhost:52663/token',
+        //            data: data,
+        //            success: function (data) {
+        //                console.log(data);
+        //            },
+        //            error: function (e) {
+        //                console.log(e);
+        //            }
+        //        });
+        //    });
+        //});
+
+                $(document).ready(function () {
+            $('#LoginForm').submit(function (event) {
+                event.preventDefault();
+                let data = {
+                    grant_type: 'password',
+                    username: $('#txtUsername').val(),
+                    password: $('#txtPassword').val()
                 }
+                console.log(data);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("Login","Login")',
+                    data: data,
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (e) {
+                        console.log(e);
+                    }
+                });
             });
+                });
+
+
     </script>
 </body>
 
