@@ -70,18 +70,18 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <button id="btnAgregar" type="button" class="btn btn-primary btn-block">Agregar producto</button>
+                    </div>
+                    <div class="form-group">
                         <label for="customer">Lista de productos</label>
                         <div class="col-md-12">
-                            <table class="table table-bordered">
+                            <table id="tblProducts" class="table table-bordered">
                                 <thead>
                                     <th>Producto</th>
+                                    <th>Precio</th>
                                     <th width="10%">Cantidad</th>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Pilsen</td>
-                                        <td>1</td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -98,8 +98,21 @@
 @section scripts {
     <script type="text/javascript">
         $(document).ready(function () {
-            
+            var listItems = [];
+            var products = [];
+            $("#btnAgregar").on("click", function () {
+                console.log($("#product").val());
+                console.log($("#quantity").val());
+                
+                var item = { "productID": $("#product").val(), "quantity": $("#quantity").val() };
 
+                var found = products.find(element => element.ProductID == item.productID);
+                console.log(found);
+
+                $('#tblProducts').append('<tr><td>' + found.Name + '</td><td> $' + found.Price + '</td><td>' + item.quantity + '</td></tr>');
+
+                listItems.push(item);
+            });
             var llenarClientes = function () {
                 $.ajax({
                     type: "GET",
@@ -123,9 +136,9 @@
                     url: '/Product/GetAll',
                     dataType: "json",
                     success: function (data) {
-                        console.log(data)
+                        products = data;
                         $.each(data, function (key, registro) {
-                            $("#product").append('<option value=' + registro.ProductID + '>' + registro.Name +' '+ registro.Price+'</option>');
+                            $("#product").append('<option value=' + registro.ProductID + '>' + registro.Name +' $'+ registro.Price+'</option>');
                         });
                         $('#product').combobox()
                     },
