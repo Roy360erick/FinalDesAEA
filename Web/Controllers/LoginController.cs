@@ -18,6 +18,7 @@ namespace Web.Controllers
             return View();
         }
 
+   
         //// GET: Login/Details/5
         //public ActionResult Details(int id)
         //{
@@ -93,7 +94,9 @@ namespace Web.Controllers
         [HttpPost]
         public ActionResult Login(string userName, string password)
         {
+
             var token = TokenDetails(userName, password);
+
             return Json(token);
         }
 

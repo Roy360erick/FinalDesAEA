@@ -90,6 +90,7 @@
     @Scripts.Render("~/Content/js/sb-admin-2.min.js")
 
     <script type="text/javascript">
+
         //$(document).ready(function () {
         //    $('#linkclose').click(function () {
         //        $('#divError').hide('fade');
@@ -141,8 +142,11 @@
         //    });
         //});
 
-                $(document).ready(function () {
+        $(document).ready(function () {
+
             $('#LoginForm').submit(function (event) {
+                debugger;
+
                 event.preventDefault();
                 let data = {
                     grant_type: 'password',
@@ -156,14 +160,18 @@
                     url: '@Url.Action("Login","Login")',
                     data: data,
                     success: function (data) {
+
+                        alert('Ingreso Exitosamente');
+                        window.location.href = '@Url.Action("Index","Home")' ;
                         console.log(data);
                     },
                     error: function (e) {
+                            alert('Ingreso Fallido');
                         console.log(e);
                     }
                 });
             });
-                });
+        });
 
 
     </script>
