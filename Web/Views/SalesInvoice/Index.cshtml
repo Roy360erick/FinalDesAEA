@@ -52,16 +52,39 @@
                     <div class="form-group">
                         <label for="customer">Cliente</label>
                         <select class="form-control" id="customer" name="customer">
-                            <option value="null">---Seleccionar---</option>
+                            <option></option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="lastname">Apellidos</label>
-                        <input type="text" class="form-control" name="lastname" id="lastname" placeholder="">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <label for="product">Productos</label>
+                                <select class="form-control" id="product" name="product">
+                                    <option></option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="quantity">Cantidad</label>
+                                <input type="text" class="form-control" name="quantity" id="quantity" placeholder="">
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="birthdate">Fecha de Nacimiento</label>
-                        <input type="text" class="form-control" name="birthdate" id="birthdate" placeholder="">
+                        <button id="btnAgregar" type="button" class="btn btn-primary btn-block">Agregar producto</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="customer">Lista de productos</label>
+                        <div class="col-md-12">
+                            <table id="tblProducts" class="table table-bordered">
+                                <thead>
+                                    <th>Producto</th>
+                                    <th>Precio</th>
+                                    <th width="10%">Cantidad</th>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -75,8 +98,21 @@
 @section scripts {
     <script type="text/javascript">
         $(document).ready(function () {
-            
+            var listItems = [];
+            var products = [];
+            $("#btnAgregar").on("click", function () {
+                console.log($("#product").val());
+                console.log($("#quantity").val());
+                
+                var item = { "productID": $("#product").val(), "quantity": $("#quantity").val() };
 
+                var found = products.find(element => element.ProductID == item.productID);
+                console.log(found);
+
+                $('#tblProducts').append('<tr><td>' + found.Name + '</td><td> $' + found.Price + '</td><td>' + item.quantity + '</td></tr>');
+
+                listItems.push(item);
+            });
             var llenarClientes = function () {
                 $.ajax({
                     type: "GET",
@@ -88,6 +124,23 @@
                             $("#customer").append('<option value=' + registro.CustomerID + '>' + registro.FullName + '</option>');
                         });
                         $('#customer').combobox()
+                    },
+                    error: function (data) {
+                        alert('error');
+                    }
+                });
+            }
+            var llenarProductos = function () {
+                $.ajax({
+                    type: "GET",
+                    url: '/Product/GetAll',
+                    dataType: "json",
+                    success: function (data) {
+                        products = data;
+                        $.each(data, function (key, registro) {
+                            $("#product").append('<option value=' + registro.ProductID + '>' + registro.Name +' $'+ registro.Price+'</option>');
+                        });
+                        $('#product').combobox()
                     },
                     error: function (data) {
                         alert('error');
@@ -246,6 +299,7 @@
 
             cargarLista();
             llenarClientes();
+            llenarProductos();
         });
     </script>
 }
