@@ -23,7 +23,7 @@
                         <th width="20%">Vendedor</th>
                         <th width="20%">Cliente</th>
                         <th width="5%">Subtotal</th>
-                        <th width="5%">Descuento</th>
+                        <th width="5%">Igv</th>
                         <th width="5%">Total</th>
                         <th width="5%">Pagado</th>
                         <th width="20%">Acciones</th>
@@ -77,13 +77,43 @@
                         <div class="col-md-12">
                             <table id="tblProducts" class="table table-bordered">
                                 <thead>
-                                    <th>Producto</th>
-                                    <th>Precio</th>
-                                    <th width="10%">Cantidad</th>
+                                <th>Producto</th>
+                                <th>Precio</th>
+                                <th width="10%">Cantidad</th>
                                 </thead>
                                 <tbody>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-8 text-right">
+                                <label for="subTotal">SubTotal</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" readonly name="subTotal" id="subTotal" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-8 text-right">
+                                <label for="discount">IGV %</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" readonly name="discount" value="18" id="discount" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-8 text-right">
+                                <label for="total">Total</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" readonly name="total" id="total" placeholder="">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -100,19 +130,29 @@
         $(document).ready(function () {
             var listItems = [];
             var products = [];
+            var sub_total = 0;
+            var total = 0;
             $("#btnAgregar").on("click", function () {
-                console.log($("#product").val());
-                console.log($("#quantity").val());
-                
-                var item = { "productID": $("#product").val(), "quantity": $("#quantity").val() };
 
-                var found = products.find(element => element.ProductID == item.productID);
-                console.log(found);
+                sub_total = 0;
+
+                var found = products.find(element => element.ProductID == $("#product").val());
+
+                var item = { "productID": $("#product").val(), "quantity": $("#quantity").val() ,"price":found.Price};
 
                 $('#tblProducts').append('<tr><td>' + found.Name + '</td><td> $' + found.Price + '</td><td>' + item.quantity + '</td></tr>');
 
                 listItems.push(item);
+
+                listItems.forEach(element => sub_total = sub_total + (element.price * element.quantity));
+
+                $("#subTotal").val(sub_total);
+
+                 total = sub_total + ( sub_total * ($("#discount").val() / 100));
+                 $("#total").val(total);
+
             });
+
             var llenarClientes = function () {
                 $.ajax({
                     type: "GET",
@@ -177,6 +217,7 @@
             var obtener_data_eliminar = function (tbody, table) {
                 $(tbody).on("click", "button.eliminar", function () {
                     var data = table.row($(this).parents("tr")).data();
+                    console.log(data)
                     Swal.fire({
                         title: '¿Estas seguro de eliminar este registro?',
                         text: "Una vez eliminado no podras recuperalo!",
@@ -189,12 +230,14 @@
                     }).then((result) => {
                         if (result.value) {
                             $.ajax({
-                                url: '/Customer/Delete',
+                                url: '/SalesInvoice/Delete',
                                 type: 'POST',
-                                data: { id: data.CustomerID },
+                                data: { id: data.SalesInvoceID },
                                 success: function (result) {
-                                    cargarLista();
-                                    Swal.fire('Eliminado!', 'El registro fue eliminado correctamente.', 'success');
+                                    setTimeout(function () {
+                                         Swal.fire('Eliminado!', 'El registro fue eliminado correctamente.', 'success');
+                                         location.reload();
+                                    }, 3000)
                                 }
                             });
                         }
@@ -259,7 +302,7 @@
                             },
                             data: data,
                             columns: [
-                                { "data": "Number"},
+                                { "data": "SalesInvoceID"},
                                 { "data": "CreateAt1"},
                                 { "data": "Seller"},
                                 { "data": "Customer"}, 
@@ -279,22 +322,59 @@
                 });
             }
 
+            var ObtenerObj = function () {
+
+                var list = [];
+
+                listItems.forEach((element) => {
+                    var detail = new Object();
+                    detail.SalesInvoceDetailID = 0;
+                    detail.Description = null;
+                    detail.Price = element.price;
+                    detail.Quantity = element.quantity;
+                    detail.SalesInvoceID = 0;
+                    detail.ProductID = element.productID;
+                    list.push(detail);
+                });
+
+                
+
+
+                var obj = new Object();
+                obj.SalesInvoice =
+                    {
+                        "SalesInvoceID": 0,
+                        "Number": 0,
+                        "Payed": true,
+                        "Discount": $("#discount").val(),
+                        "Reason": null,
+                        "CustomerID": $("#customer").val(),
+                        "SellerID": 1
+                    };
+                obj.SalesInvoceDetails = list;
+
+                return obj;
+
+            }
 
 
             $("#form1").on("submit", function () {
+                event.preventDefault();
                 $.ajax({
-                    url: '/Customer/Add',
+                    url: '/SalesInvoice/Add',
                     type: 'POST',
-                    data: $(this).serialize(),
+                    data: ObtenerObj(),
                     success: function (result) {
-                        limpiarForm();
+                        console.log(result);
+                         $("#exampleModal").modal('hide');
                         setTimeout(function () {
-                            cargarLista();
+                            Swal.fire('Registrado!', 'Registrado correctamente.', 'success');
+                             location.reload();
                         }, 3000)
 
-                        Swal.fire('Eliminado!', 'El registro fue eliminado correctamente.', 'success');
                     }
                 });
+                
             });
 
             cargarLista();

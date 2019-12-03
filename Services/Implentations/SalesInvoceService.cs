@@ -19,7 +19,12 @@ namespace Services.Implentations
             {
                 using (var context = new DataContext())
                 {
-                    response.Object = context.SalesInvoces.Where(x => x.SalesInvoceID == ID && x.State == true).FirstOrDefault();
+                    response.Object = context.SalesInvoces
+                        .Include("Customer")
+                        .Include("Seller")
+                        .Include("SalesInvoceDetails.Product")
+                        .Where(x => x.SalesInvoceID == ID && x.State == true).FirstOrDefault();
+                   
                 }
                 response.IsSuccess = true;
                 response.Message = "Success";
@@ -64,7 +69,7 @@ namespace Services.Implentations
                 {
                     model.CreateAt = DateTime.Now;
                     model.State = true;
-                    context.SalesInvoces.Add(model);
+                    response.Object = context.SalesInvoces.Add(model);
                     context.SaveChanges();
                 }
                 response.IsSuccess = true;

@@ -18,11 +18,11 @@ namespace Domain.StoreProcedure
 
         public string Customer { get; set; }
 
-        public decimal SubTotal { get; set; }
+        public double SubTotal { get; set; }
 
         public int Discount { get; set; }
 
-        public decimal Total { get; set; }
+        public double Total { get; set; }
 
         public bool Payed { get; set; }
     }

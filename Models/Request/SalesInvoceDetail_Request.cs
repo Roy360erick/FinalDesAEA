@@ -9,7 +9,5 @@ namespace Models.Request
         public float Quantity { get; set; }
         public int SalesInvoceID { get; set; }
         public int ProductID { get; set; }
-
-
     }
 }

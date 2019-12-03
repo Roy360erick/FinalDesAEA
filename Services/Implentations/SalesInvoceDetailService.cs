@@ -19,7 +19,7 @@ namespace Services.Implentations
             {
                 using (var context = new DataContext())
                 {
-                    response.Object = context.SalesInvoceDetails.Where(x => x.SalesInvoceDetailID == ID).FirstOrDefault();
+                    response.List = context.SalesInvoceDetails.Include("Product").Include("SalesInvoce").Where(x => x.SalesInvoceID == ID).ToList();
                 }
                 response.IsSuccess = true;
                 response.Message = "Success";

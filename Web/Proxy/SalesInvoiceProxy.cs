@@ -94,6 +94,28 @@ namespace Web.Proxy
                 };
             }
         }
+        public async Task<EResponseBase<SalesInvoce_Response>> Add(SalesInvoiceRegister_Request model)
+        {
+            var request = JsonConvert.SerializeObject(model);
+            var content = new StringContent(request, Encoding.UTF8, "application/json");
+
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(_urlBase);
+            var url = string.Concat(_endPoint);
+
+            var response = await client.PostAsync(url, content);
+            var answer = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                return new EResponseBase<SalesInvoce_Response>
+                {
+                    IsSuccess = false,
+                    Code = (int)response.StatusCode,
+                    Message = "Error"
+                };
+            }
+            return JsonConvert.DeserializeObject<EResponseBase<SalesInvoce_Response>>(answer);
+        }
         public async Task<EResponseBase<SalesInvoce_Response>> Update(SalesInvoce_Request model)
         {
             var request = JsonConvert.SerializeObject(model);

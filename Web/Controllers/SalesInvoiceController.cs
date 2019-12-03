@@ -33,11 +33,10 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(SalesInvoce_Request model)
+        public ActionResult Add(SalesInvoiceRegister_Request model)
         {
             var response = Task.Run(() => proxy.Add(model));
-            string message = response.Result.Message;
-            return Json(new { Message = message, JsonRequestBehavior.AllowGet });
+            return Json(response, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPut]
@@ -48,7 +47,7 @@ namespace Web.Controllers
             return Json(new { Message = message, JsonRequestBehavior.AllowGet });
         }
 
-        [HttpDelete]
+        [HttpPost]
         public ActionResult Delete(int id)
         {
             var response = Task.Run(() => proxy.Delete(id));

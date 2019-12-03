@@ -1,6 +1,7 @@
 ﻿using Common.HttpHelpers;
 using Domain.Models;
 using Domain.StoreProcedure;
+using Models.Request;
 using Services.Implentations;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace WebAPI.Controllers
     public class SalesInvoceController : ApiController
     {
         private SalesInvoceService SalesInvoceService = new SalesInvoceService();
+        private SalesInvoceDetailService SalesInvoceDetailService = new SalesInvoceDetailService();
 
         // GET: api/SalesInvoce
         [HttpGet]
@@ -30,11 +32,27 @@ namespace WebAPI.Controllers
             return Json(SalesInvoceService.Get(id));
         }
 
-        // POST: api/SalesInvoce
         [HttpPost]
-        public JsonResult<EResponseBase<SalesInvoce>> Post(SalesInvoce SalesInvoce)
+        public JsonResult<EResponseBase<SalesInvoce>> Post(SalesInvoiceRegister_Request model)
         {
-            return Json(SalesInvoceService.Add(SalesInvoce));
+            var salesInvoice = new SalesInvoce
+            {
+                SalesInvoceID = 0,
+                Number = model.SalesInvoice.Number,
+                discount = model.SalesInvoice.Discount,
+                Payed = model.SalesInvoice.Payed,
+                Reason = model.SalesInvoice.Reason,
+                CustomerID = model.SalesInvoice.CustomerID,
+                SellerID = model.SalesInvoice.SellerID
+            };
+            salesInvoice.SalesInvoceDetails = model.SalesInvoceDetails.Select(x => new SalesInvoceDetail {
+                Price = x.Price,
+                Quantity = x.Quantity,
+                ProductID = x.ProductID
+            }).ToList();
+
+            var response = SalesInvoceService.Add(salesInvoice);
+            return Json(response);
         }
 
         // PUT: api/SalesInvoce/5
