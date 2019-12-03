@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Web.Proxy
 {
-    public class LoginProxy 
+    public class RegisterProxy 
     {
 
         public string _urlBase = ConstantsUrl.UrlBase;
